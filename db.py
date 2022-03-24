@@ -26,13 +26,27 @@ try:
     with open('phus.json') as json_data:
         # use load() rather than loads() for JSON files
         df = json.load(json_data)
-    
-    print(df)
+      
     cursor.execute('DROP TABLE if exists phus;')
     connection.commit()
     cursor.execute('CREATE TABLE phus (id int, code varchar, streetname varchar, \
         bemaerkning varchar, geometry geometry);')
-    
+    # Add a commit on the connection.
+    connection.commit()
+    for i in range(len(df)):
+        feature = df[i]['properties']
+        geometry = df[i]['geometry']
+        geom = json.dumps(geometry)
+        
+        id = feature['id']
+        code = feature['vejkode']
+        street_name = feature['vejnavn']
+        bemaerkning = feature['bemaerkning']
+        cursor.execute("""INSERT INTO phus (id, code, streetname, bemaerkning, geometry)  
+                       VALUES ({0}, {1}, '{2}', '{3}', ST_AsText(ST_GeomFromGeoJSON('{4}')))"""
+                       .format(id, code, street_name, bemaerkning, geom))
+    connection.commit()
+    print("Records Successfully Imported!")
 
 except (Exception, Error) as error:
     print("Error while connecting to PostgreSQL", error)
