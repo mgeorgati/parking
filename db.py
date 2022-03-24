@@ -9,6 +9,7 @@ try:
         user = "postgres",
         host = "localhost",
         port = '5432',
+        #### ---- YOU NEED TO CHANGE THIS!!!! ---- ####
         password = "postgres",
         sslmode="disable")
     # Create a cursor to perform database operations
