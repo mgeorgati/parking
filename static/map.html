@@ -47,10 +47,22 @@
             $.ajax({
                 url: "/parking?" + "lat=" + e.latlng.lat + "&lng=" + e.latlng.lng
             }).done(function(data) {
+                //console.log(data)
                 phus.remove();
-                phus = L.geoJSON(data)
+                phus = L.geoJSON(data, {
+                    onEachFeature: function(feature, layer) {
+                        //console.log(feature);
+                        //console.log(layer);
+                        var popupText = "<b>Street:</b> " + feature.properties.streetname +
+                            "<br><b>Firm:</b> " + feature.properties.firm;
+                        layer.bindPopup(popupText, {
+                            closeButton: true,
+                            offset: L.point(0, -20)
+                        });
+                    }
+                })
                 phus.addTo(map);
-            })
+            });
         }
 
         var map = L.map('map').setView([55.675706, 12.578745], 13).on('click', onMapClick);

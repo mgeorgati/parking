@@ -21,7 +21,7 @@ def hello_park():
     # Open a cursor to perform database operations
     cur = conn.cursor()
     # Query the database and obtain data as Python objects
-    cur.execute("""SELECT id, streetname, ST_AsGeoJSON(geometry)
+    cur.execute("""SELECT id, streetname, bemaerkning, ST_AsGeoJSON(geometry)
                             FROM phus
                             ORDER BY geometry <-> 'SRID=4326;POINT(%s %s)'::geometry
                             LIMIT 1;""", (lng, lat))
@@ -30,9 +30,11 @@ def hello_park():
         "type": "Feature",
         "properties": {
             "id": '''+str(row[0])+''',
-            "streetname": "'''+row[1]+'''"},
-        "geometry": '''+ row[2]+ '''
-    }'''
+            "streetname": "'''+row[1]+'''",
+            "firm": "'''+row[2]+'''"},
+        "geometry": '''+ row[3]+ '''
+    }
+    '''
 
     cur.close()
     conn.close()
